@@ -16,7 +16,10 @@ public class SavedBoards {
         }
     }
 
-    public Board loadLastSave() {
+    public Board loadLastSave() throws IllegalStateException {
+        if (boardList.size() < 1) {
+            throw new IllegalStateException("No boards to load from");
+        }
         Board loadedBoard = boardList.pop();
         try {
             loadedBoard.removeLastChange();

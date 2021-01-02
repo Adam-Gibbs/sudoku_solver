@@ -9,6 +9,7 @@ import lombok.Data;
 public class Cell {
     private Integer value;
     private ArrayList<Integer> tempValues = new ArrayList<>();
+    private Integer stringPosition = 1;
 
     public void setValue(Integer newValue) throws IllegalStateException {
         if (value != null) {
@@ -77,5 +78,28 @@ public class Cell {
                 tempValues.remove(value);
             }
         }
+    }
+
+    private String nextLine() {
+        if (hasValue()) {
+            return value.toString() + value.toString() + value.toString();
+        } else {
+            String newString = "";
+            for (Integer i = stringPosition; i == stringPosition*3; i++) {
+                newString += i.toString();
+            }
+
+            if (stringPosition > 3) {
+                stringPosition = 1;
+            } else {
+                stringPosition++;
+            }
+
+            return newString;
+        }
+    }
+
+    public String lineToString() {
+        return nextLine() + "\n";
     }
 }

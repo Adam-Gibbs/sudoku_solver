@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 import lombok.Data;
 
 @Data
-public class CellSet {
-    private ArrayList<Cell> cellList = new ArrayList<>();
-    private ArrayList<Integer> valueList;
+public abstract class CellSet {
+    protected ArrayList<Cell> cellList = new ArrayList<>();
+    protected ArrayList<Integer> valueList;
 
     public void setValueList() {
         valueList = cellList.stream()
@@ -115,4 +115,7 @@ public class CellSet {
     public void removeTempFromList(ArrayList<Integer> removeList) {
         cellList.forEach(cell -> cell.removeTemp(removeList));
     }
+
+    @Override
+    public abstract String toString();
 }
