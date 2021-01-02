@@ -65,6 +65,12 @@ public class Cell {
         }
     }
 
+    public void removeTemp(Integer currentValue) {
+        if (tempValues.contains(currentValue)) {
+            tempValues.remove(currentValue);
+        }
+    }
+
     public void removeTemp(ArrayList<Integer> currentValues) {
         for (Integer value : currentValues) {
             if (tempValues.contains(value)) {
