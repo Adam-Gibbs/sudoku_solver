@@ -19,6 +19,14 @@ public class Cell {
         tempValues.clear();
     }
 
+    public void setValueFromList(ArrayList<Integer> valueList) throws IllegalStateException {
+        for (Integer value : valueList) {
+            if (tempValues.contains(value)) {
+                setValue(value);
+            }
+        }
+    }
+
     public void addTempValue(Integer newTempValue) throws IllegalStateException {
         if (value != null) {
             throw new IllegalStateException("Cell already has a value");
@@ -46,5 +54,22 @@ public class Cell {
         }
 
         setValue(tempValues.get(0));
+    }
+
+    public void populateTemp(int maxNumber) {
+        maxNumber++;
+        if (value != null) {
+            for (Integer i = 1; i < maxNumber; i++) {
+                tempValues.add(i);
+            }
+        }
+    }
+
+    public void removeTemp(ArrayList<Integer> currentValues) {
+        for (Integer value : currentValues) {
+            if (tempValues.contains(value)) {
+                tempValues.remove(value);
+            }
+        }
     }
 }
