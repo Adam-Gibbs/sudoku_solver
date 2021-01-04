@@ -3,21 +3,25 @@ package dev.adamgibbs.sudoku_solver.board;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import dev.adamgibbs.sudoku_solver.board.saves.SavedCell;
 import lombok.Data;
 
 @Data
 public class Cell {
     private Integer value;
+    private Integer position;
     private ArrayList<Integer> tempValues = new ArrayList<>();
     private Integer stringPosition = 1;
+    private Boolean change = false;
 
     public void setValue(Integer newValue) throws IllegalStateException {
         if (value != null) {
             throw new IllegalStateException("Cell already has a value");
         }
 
+        change = true;
         value = newValue;
-        tempValues.clear();
+        tempValues = new ArrayList<>();
     }
 
     public void setValueFromList(ArrayList<Integer> valueList) throws IllegalStateException {
@@ -59,7 +63,7 @@ public class Cell {
 
     public void populateTemp(int maxNumber) {
         maxNumber++;
-        if (value != null) {
+        if (!hasValue() && tempValues.size() == 0) {
             for (Integer i = 1; i < maxNumber; i++) {
                 tempValues.add(i);
             }
@@ -67,39 +71,60 @@ public class Cell {
     }
 
     public void removeTemp(Integer currentValue) {
-        if (tempValues.contains(currentValue)) {
-            tempValues.remove(currentValue);
+        if (!hasValue()) {
+            if (tempValues.contains(currentValue)) {
+                tempValues.remove(currentValue);
+                change = true;
+            }
         }
     }
 
     public void removeTemp(ArrayList<Integer> currentValues) {
-        for (Integer value : currentValues) {
-            if (tempValues.contains(value)) {
-                tempValues.remove(value);
+        if (!hasValue()) {
+            for (Integer value : currentValues) {
+                if (tempValues.contains(value)) {
+                    tempValues.remove(value);
+                    change = true;
+                }
             }
         }
     }
 
-    private String nextLine() {
+    public SavedCell save() {
+        return new SavedCell(value, position, new ArrayList<>(tempValues));
+    }
+
+    public void load(SavedCell save) {
+        value = save.getValue();
+        position = save.getPosition();
+        tempValues = save.getTempValues();
+        change = false;
+    }
+
+    public void resetChange() {
+        change = false;
+    }
+
+    public String lineToString() {
         if (hasValue()) {
             return value.toString() + value.toString() + value.toString();
         } else {
             String newString = "";
-            for (Integer i = stringPosition; i == stringPosition*3; i++) {
-                newString += i.toString();
+            for (Integer i = stringPosition; i < (stringPosition+3); i++) {
+                if (tempValues.contains(i)){
+                    newString += i.toString();
+                } else {
+                    newString += " ";
+                }
             }
 
-            if (stringPosition > 3) {
+            if (stringPosition == 7) {
                 stringPosition = 1;
             } else {
-                stringPosition++;
+                stringPosition += 3;
             }
 
             return newString;
         }
-    }
-
-    public String lineToString() {
-        return nextLine() + "\n";
     }
 }

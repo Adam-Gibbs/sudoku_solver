@@ -1,7 +1,9 @@
 package dev.adamgibbs.sudoku_solver.board;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,19 +16,18 @@ import lombok.Data;
 @Data
 public abstract class CellSet {
     protected ArrayList<Cell> cellList = new ArrayList<>();
-    protected ArrayList<Integer> valueList;
+    protected ArrayList<Integer> valueList = new ArrayList<>();
 
     public void setValueList() {
-        valueList = cellList.stream()
-                            .map(cell -> cell.getValue())
-                            .collect(Collectors
-                            .toCollection(ArrayList::new));                            
+        for (Cell cell : cellList) {
+            if (cell.hasValue()) {
+                valueList.add(cell.getValue());
+            }
+        }      
     }
 
     public void addCell(Cell newCell) {
-        if (!cellList.contains(newCell)) {
-            cellList.add(newCell);
-        }        
+        cellList.add(newCell);  
     }
 
     public LinkedHashMap<Cell, Integer> getCellTempCounts() {
@@ -114,6 +115,71 @@ public abstract class CellSet {
 
     public void removeTempFromList(ArrayList<Integer> removeList) {
         cellList.forEach(cell -> cell.removeTemp(removeList));
+    }
+
+    public void resetChanges() {
+        cellList.forEach(cell -> cell.resetChange());
+    }
+
+    public Boolean checkChange() {
+        for (Cell cell : cellList) {
+            if (cell.getChange()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean checkComplete() {
+        for (Cell cell : cellList) {
+            if (!cell.hasValue()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void reloadValues() {
+        valueList.clear();
+        setValueList();
+    }
+    private Boolean checkAllPossibleNumsInSet() {
+        ArrayList<Integer> valueList = new ArrayList<>();
+
+        for (Cell cell : cellList) {
+            if (cell.hasValue()) {
+                valueList.add(cell.getValue());
+            } else {
+                valueList.addAll(cell.getTempValues());
+            }
+        }
+
+        return valueList.containsAll(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9));
+    }
+
+    private Boolean checkMultipleDoubles() {
+        ArrayList<List<Integer>> doublesValueList = new ArrayList<>();
+        for (List<Integer> valueList : this.getDoubles().values()) {
+            doublesValueList.add(valueList);
+        }
+
+        Map<List<Integer>, Long> frequencyMap =
+                    doublesValueList.stream().collect(Collectors.groupingBy(Function.identity(),
+                                                                            Collectors.counting()));
+ 
+        for (Map.Entry<List<Integer>, Long> entry : frequencyMap.entrySet()) {
+            if (entry.getValue() > 2) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public Boolean checkSolvable() {
+        return (checkMultipleDoubles() && checkAllPossibleNumsInSet());
     }
 
     @Override
