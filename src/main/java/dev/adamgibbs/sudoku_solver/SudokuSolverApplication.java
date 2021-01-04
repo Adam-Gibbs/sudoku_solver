@@ -15,7 +15,7 @@ public class SudokuSolverApplication {
 
 		Scanner scanner = new Scanner(System.in);
 		while (isContinue) {
-			play(scanner, solver);
+			play(solver, getSudokuInput(scanner));
 		}
 		scanner.close();
 	}
@@ -33,13 +33,15 @@ public class SudokuSolverApplication {
 		return cellValues;
 	}
 
-	private static void play(Scanner scanner, SolverLogic solver) {
+	private static void play(SolverLogic solver, ArrayList<Integer> sudokuInput) {
 		Board sudokuBoard = new BoardMaker()
-								.addCellValues(getSudokuInput(scanner))
+								.addCellValues(sudokuInput)
 								.build();
 
-		System.out.println("Input:\n" + sudokuBoard + "\n\n Output:");
-		System.out.println(solver.solveBoard(sudokuBoard));
+		System.out.println("Input:\n" + sudokuBoard);
+		solver.solveBoard(sudokuBoard);
+		System.out.println("\n\n Output:" + solver.getLastBoard());
+		System.out.println("Difficulty: " + solver.getLastDifficulty());
 	}
 
 }
