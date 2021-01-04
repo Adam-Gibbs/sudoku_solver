@@ -1,25 +1,42 @@
 package dev.adamgibbs.sudoku_solver;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
 import dev.adamgibbs.sudoku_solver.board.Board;
 import dev.adamgibbs.sudoku_solver.board.BoardMaker;
 import dev.adamgibbs.sudoku_solver.solverLogic.SolverLogic;
 
-
 public class SudokuSolverApplication {
 
 	public static void main(String[] args) {
 		SolverLogic solver = new SolverLogic();
-		ArrayList<Integer> cellValues = new ArrayList<>(
-			List.of(0, 0, 0, 0, 0, 0, 6, 8, 0, 0, 0, 0, 0, 7, 3, 0, 0, 9, 3, 0, 9, 0, 0, 0, 0, 4, 5,
-					4, 9, 0, 0, 0, 0, 0, 0, 0, 8, 0, 3, 0, 5, 0, 9, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 6,
-					9, 6, 0, 0, 0, 0, 3, 0, 8, 7, 0, 0, 6, 8, 0, 0, 0, 0, 0, 2, 8, 0, 0, 0, 0, 0, 0)
-		);
+		Boolean isContinue = true;
+
+		Scanner scanner = new Scanner(System.in);
+		while (isContinue) {
+			play(scanner, solver);
+		}
+		scanner.close();
+	}
+
+	private static ArrayList<Integer> getSudokuInput(Scanner scanner) {
+		ArrayList<Integer> cellValues = new ArrayList<>();
+
+		System.out.println("Enter sudoku:");
+		String input = scanner.nextLine();
+
+		for(char value : input.toCharArray()) {
+			cellValues.add(Character.getNumericValue(value));
+		}
+
+		return cellValues;
+	}
+
+	private static void play(Scanner scanner, SolverLogic solver) {
 		Board sudokuBoard = new BoardMaker()
-							.addCellValues(cellValues)
-							.build();
+								.addCellValues(getSudokuInput(scanner))
+								.build();
 
 		System.out.println("Input:\n" + sudokuBoard + "\n\n Output:");
 		System.out.println(solver.solveBoard(sudokuBoard));
