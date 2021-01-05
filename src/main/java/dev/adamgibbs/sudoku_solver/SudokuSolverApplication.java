@@ -1,6 +1,5 @@
 package dev.adamgibbs.sudoku_solver;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import dev.adamgibbs.sudoku_solver.board.Board;
@@ -20,27 +19,19 @@ public class SudokuSolverApplication {
 		scanner.close();
 	}
 
-	private static ArrayList<Integer> getSudokuInput(Scanner scanner) {
-		ArrayList<Integer> cellValues = new ArrayList<>();
-
+	private static String getSudokuInput(Scanner scanner) {
 		System.out.println("Enter sudoku:");
-		String input = scanner.nextLine();
-
-		for(char value : input.toCharArray()) {
-			cellValues.add(Character.getNumericValue(value));
-		}
-
-		return cellValues;
+		return scanner.nextLine();
 	}
 
-	private static void play(SolverLogic solver, ArrayList<Integer> sudokuInput) {
+	private static void play(SolverLogic solver, String sudokuInput) {
 		Board sudokuBoard = new BoardMaker()
-								.addCellValues(sudokuInput)
+								.addCellValuesFromString(sudokuInput)
 								.build();
 
 		System.out.println("Input:\n" + sudokuBoard);
 		solver.solveBoard(sudokuBoard);
-		System.out.println("\n\n Output:" + solver.getLastBoard());
+		System.out.println("\n\n Output: " + solver.getLastBoard());
 		System.out.println("Difficulty: " + solver.getLastDifficulty());
 	}
 

@@ -13,6 +13,17 @@ public class BoardMaker {
         return this;
     }
 
+    public BoardMaker addCellValuesFromString(String inputString) {
+        ArrayList<Integer> cellValues = new ArrayList<>();
+
+		for(char value : inputString.toCharArray()) {
+			cellValues.add(Character.getNumericValue(value));
+		}
+
+        cellValueList = cellValues;
+        return this;
+    }
+
     public BoardMaker addCellValue(Integer cellValue) {
         cellValueList.add(cellValue);
 
